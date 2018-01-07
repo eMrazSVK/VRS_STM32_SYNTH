@@ -37,6 +37,26 @@ SOFTWARE.
 /* Private variables */
 /* Private function prototypes */
 /* Private functions */
+void DMA1_Channel6_IRQHandler(void) {
+  /* Test on DMA Stream Transfer Complete interrupt */
+  if (DMA_GetITStatus(DMA1_IT_TC6))
+  {
+    /* Clear DMA Stream Transfer Complete interrupt pending bit */
+    DMA_ClearITPendingBit(DMA1_IT_TC6);
+    switch(uart_dma_buffer[0]) {
+    	case 97 :
+    		set_waveform(SINE);
+    		break;
+    	case 98 :
+			set_waveform(SAWTOOTH);
+			break;
+    	case 99 :
+    		set_waveform(SQUARE);
+    		break;
+    }
+  }
+}
+
 
 
 /**
@@ -72,6 +92,8 @@ int main(void)
   /*Do the basic inits here*/
 
   basic_init();
+  NVIC_Config();
+  USART2_Config();
   set_waveform(SINE);
   DAC1_Config(&current_waveform);
   TIM6_Config(calc_timer_period(20));
