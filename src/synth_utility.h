@@ -12,6 +12,6 @@
 
 uint16_t calc_timer_period(uint32_t signal_frequency);
 
-void set_waveform(WAVEFORMS wave_type);
+void set_waveform(WAVEFORMS wave_type, int osc);
 
 #endif /* SYNTH_UTILITY_H_ */

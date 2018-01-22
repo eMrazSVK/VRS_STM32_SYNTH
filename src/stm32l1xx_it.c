@@ -23,6 +23,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l1xx_it.h"
+#include "common.h"
+#include "periph_config.h"
+#include "synth_utility.h"
 /* #include "main.h" */
 
 /** @addtogroup Template_Project
@@ -135,10 +138,44 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	static int turn_on_flag;
+	static uint8_t counter;
+	uint16_t help_array[WAVEFORM_RES];
+	ticks++;
+	/*
+	if ((ticks % 1000) == 0) {
+		TIM6_Config(calc_timer_period(OSC1_Freq + LFO_sine_function[ticks]));
+		counter++;
+	}
+	*/
+
+	if (make_sound == 1) {
+		if (turn_on_flag == 0) {
+			turn_on_flag = 1;
+			osc_start();
+			counter = ticks;
+		}
+		/*
+		if ((ticks-counter) < ADSR_WAVEFORM_RES) {
+			for (int i = 0; i < WAVEFORM_RES; i++) {
+				help_array[i] = current_waveform[i]*ramp_function[ticks-counter];
+			}
+			memcpy(&current_waveform,&help_array,sizeof(uint16_t)*WAVEFORM_RES);
+		}
+		*/
+	}
+
+	if (make_sound == 0) {
+		turn_on_flag = 0;
+		osc_stop();
+	}
+
+
+
 	/*  TimingDelay_Decrement(); */
-#ifdef USE_STM32L_DISCOVERY
-  TimingDelay_Decrement();
-#endif
+//#ifdef USE_STM32L_DISCOVERY
+//  TimingDelay_Decrement();
+//#endif
 }
 
 /******************************************************************************/

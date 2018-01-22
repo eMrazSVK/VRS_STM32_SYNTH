@@ -37,25 +37,6 @@ SOFTWARE.
 /* Private variables */
 /* Private function prototypes */
 /* Private functions */
-void DMA1_Channel6_IRQHandler(void) {
-  /* Test on DMA Stream Transfer Complete interrupt */
-  if (DMA_GetITStatus(DMA1_IT_TC6))
-  {
-    /* Clear DMA Stream Transfer Complete interrupt pending bit */
-    DMA_ClearITPendingBit(DMA1_IT_TC6);
-    switch(uart_dma_buffer[0]) {
-    	case 97 :
-    		set_waveform(SINE);
-    		break;
-    	case 98 :
-			set_waveform(SAWTOOTH);
-			break;
-    	case 99 :
-    		set_waveform(SQUARE);
-    		break;
-    }
-  }
-}
 
 
 
@@ -90,17 +71,26 @@ int main(void)
   /* TODO - Add your application code here */
 
   /*Do the basic inits here*/
-
+  uint16_t help_array[WAVEFORM_RES];
+  make_sound = 0;
   basic_init();
   NVIC_Config();
   USART2_Config();
-  set_waveform(SINE);
-  DAC1_Config(&current_waveform);
-  TIM6_Config(calc_timer_period(20));
+  set_waveform(SINE, 1);
+  set_waveform(SINE, 2);
+  OSC1_Freq = 262;
+  LFO1_Freq = 2;
+  OSC2_Freq = 311;
+  //memcpy(&current_waveform,&help_array,sizeof(uint16_t)*WAVEFORM_RES);
+  DAC1_Config(&current_waveform_osc_1);
+  DAC2_Config(&current_waveform_osc_2);
+  TIM6_Config(calc_timer_period(OSC1_Freq));
+  TIM7_Config(calc_timer_period(OSC2_Freq));
 
   /* Infinite loop */
   while (1)
   {
+	edgeDetector();
 	i++;
   }
   return 0;
