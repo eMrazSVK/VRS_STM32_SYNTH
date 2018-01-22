@@ -20,6 +20,9 @@
 #include <stddef.h>
 #include "stm32l1xx.h"
 #include <string.h>
+#include "mcu.h"
+#include "spi.h"
+#include "display.h"
 
 
 /* Fixed buffer for desired waveform - passed to DMA channel used for DAC */

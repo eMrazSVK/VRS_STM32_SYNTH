@@ -71,7 +71,6 @@ int main(void)
   /* TODO - Add your application code here */
 
   /*Do the basic inits here*/
-  uint16_t help_array[WAVEFORM_RES];
   make_sound = 0;
   basic_init();
   NVIC_Config();
@@ -81,12 +80,12 @@ int main(void)
   OSC1_Freq = 262;
   LFO1_Freq = 2;
   OSC2_Freq = 311;
-  //memcpy(&current_waveform,&help_array,sizeof(uint16_t)*WAVEFORM_RES);
   DAC1_Config(&current_waveform_osc_1);
   DAC2_Config(&current_waveform_osc_2);
   TIM6_Config(calc_timer_period(OSC1_Freq));
   TIM7_Config(calc_timer_period(OSC2_Freq));
-
+  InitDisplay();
+  DisplayScreen1();
   /* Infinite loop */
   while (1)
   {

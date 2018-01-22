@@ -167,6 +167,7 @@ void DMA1_Channel6_IRQHandler(void) {
 		params.osc2_freq = uart_dma_buffer[7] | uart_dma_buffer[8] << 8;
 
 		set_params();
+		DrawAllParams();
     }
   }
 }
