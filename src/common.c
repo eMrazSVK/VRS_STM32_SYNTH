@@ -75,21 +75,23 @@ const float ramp_function[ADSR_WAVEFORM_RES] = { 	0.010000, 0.020000, 0.030000, 
 													0.900000, 0.910000, 0.920000, 0.930000, 0.940000, 0.950000, 0.960000, 0.970000, 0.980000, 0.990000,
 													1.000000 };
 
+uint16_t arpeggio_sequence[4] = { 220, 262, 294, 330 };
+uint16_t arpeggio_sequence_2[4] = { 330, 392, 440, 494 };
+
 /* Rising and falling edge detector for nucleo button */
 void edgeDetector(void) {
 	static uint8_t previous_state;
 	int actual_state;
 	actual_state = GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13);
 
-	/*
-	if (((actual_state == 1) && (previous_state == 1)) || ((actual_state == 0) && (previous_state == 0))){
-			previous_state = actual_state;
-	}
-	*/
-
 	if (((actual_state == 1) && (previous_state == 0))){
 			previous_state = actual_state;
 			make_sound = 0;
+			last_button_click = ticks;
+
+			if (arpeggiator_start == 1) {
+				arpeggiator_start = 0;
+			}
 		}
 
 	if (((actual_state == 0) && (previous_state == 1))){
@@ -99,6 +101,7 @@ void edgeDetector(void) {
 
 }
 
+// not used - planned for ADSR Envelope modelling
 void array_multiply() {
 	uint16_t i;
 	uint16_t copied_array[WAVEFORM_RES];

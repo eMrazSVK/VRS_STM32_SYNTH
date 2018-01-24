@@ -72,6 +72,7 @@ int main(void)
 
   /*Do the basic inits here*/
   make_sound = 0;
+  arpeggiator_start = 0;
   basic_init();
   NVIC_Config();
   USART2_Config();

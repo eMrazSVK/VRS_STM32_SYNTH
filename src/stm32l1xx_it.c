@@ -139,8 +139,9 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
 	static int turn_on_flag;
+	static int arpeggio_count;
 	static uint8_t counter;
-	uint16_t help_array[WAVEFORM_RES];
+	static uint32_t tick_count;
 	ticks++;
 	/*
 	if ((ticks % 1000) == 0) {
@@ -148,6 +149,12 @@ void SysTick_Handler(void)
 		counter++;
 	}
 	*/
+	if ((ticks - last_button_click) < 1000) {
+		arpeggiator_start = 1;
+		tick_count = ticks;
+		set_waveform(SINE, 1);
+		set_waveform(SINE, 2);
+	}
 
 	if (make_sound == 1) {
 		if (turn_on_flag == 0) {
@@ -155,19 +162,25 @@ void SysTick_Handler(void)
 			osc_start();
 			counter = ticks;
 		}
-		/*
-		if ((ticks-counter) < ADSR_WAVEFORM_RES) {
-			for (int i = 0; i < WAVEFORM_RES; i++) {
-				help_array[i] = current_waveform[i]*ramp_function[ticks-counter];
-			}
-			memcpy(&current_waveform,&help_array,sizeof(uint16_t)*WAVEFORM_RES);
+
+	}
+
+	if (arpeggiator_start == 1) {
+		if ((ticks - tick_count) == 250) {
+			tick_count = ticks;
+			TIM7_Config(calc_timer_period(arpeggio_sequence_2[arpeggio_count]));
+			TIM6_Config(calc_timer_period(arpeggio_sequence[arpeggio_count++]));
+
 		}
-		*/
+
+		if (arpeggio_count == 4) arpeggio_count = 0;
 	}
 
 	if (make_sound == 0) {
 		turn_on_flag = 0;
 		osc_stop();
+		arpeggio_count = 0;
+		arpeggiator_start = 0;
 	}
 
 

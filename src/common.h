@@ -29,6 +29,10 @@
 uint16_t current_waveform_osc_1[WAVEFORM_RES];
 uint16_t current_waveform_osc_2[WAVEFORM_RES];
 
+/* Arpeggio sequence */
+uint16_t arpeggio_sequence[4];
+uint16_t arpeggio_sequence_2[4];
+
 /* LFO Frequencies in Hz */
 uint8_t LFO1_Freq;
 uint8_t LFO2_Freq;
@@ -65,14 +69,19 @@ typedef enum {
 } WAVEFORMS;
 
 typedef struct {
-	uint16_t osc1_freq;
+	uint16_t  osc1_freq;
 	WAVEFORMS osc1_waveform;
-	uint16_t osc2_freq;
+	uint16_t  osc2_freq;
 	WAVEFORMS osc2_waveform;
 } osc_params;
 
 /* flag to start oscillators */
 int make_sound;
+
+/* flags for controlling arpeggiator */
+uint32_t last_button_click;
+int arpeggiator_start;
+
 
 /* structure to hold all osc related params */
 osc_params params;
